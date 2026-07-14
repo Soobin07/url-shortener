@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ssu.urlshortener.url.dto.CreateUrlRequest;
 import com.ssu.urlshortener.url.dto.UrlResponse;
 import com.ssu.urlshortener.url.entity.Url;
+import com.ssu.urlshortener.url.generator.ShortCodeGenerator;
 import com.ssu.urlshortener.url.repository.UrlRepository;
-import com.ssu.urlshortener.url.util.ShortCodeGenerator;
 
 import lombok.RequiredArgsConstructor;
 

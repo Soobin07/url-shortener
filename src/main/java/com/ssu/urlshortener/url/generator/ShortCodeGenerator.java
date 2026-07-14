@@ -1,4 +1,4 @@
-package com.ssu.urlshortener.url.util;
+package com.ssu.urlshortener.url.generator;
 
 import java.security.SecureRandom;
 
