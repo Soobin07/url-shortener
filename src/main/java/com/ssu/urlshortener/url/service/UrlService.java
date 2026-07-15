@@ -1,5 +1,7 @@
 package com.ssu.urlshortener.url.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,5 +52,19 @@ public class UrlService {
 		}
 
 		throw new IllegalStateException("단축 코드 생성에 실패했습니다.");
+	}
+	
+	@Transactional
+	public String redirect(String shortCode) {
+		Url url = urlRepository.findByShortCode(shortCode)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 단축 URL입니다."));
+
+		if (url.isExpired(LocalDateTime.now())) {
+			throw new IllegalStateException("만료된 단축 URL입니다.");
+		}
+
+		url.increaseClickCount();
+
+		return url.getOriginalUrl();
 	}
 }
