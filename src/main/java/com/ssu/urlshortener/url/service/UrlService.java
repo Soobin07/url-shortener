@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssu.urlshortener.global.exception.url.ShortCodeGenerationException;
+import com.ssu.urlshortener.global.exception.url.UrlExpiredException;
+import com.ssu.urlshortener.global.exception.url.UrlNotFoundException;
 import com.ssu.urlshortener.url.dto.CreateUrlRequest;
 import com.ssu.urlshortener.url.dto.UrlResponse;
 import com.ssu.urlshortener.url.entity.Url;
@@ -51,16 +54,17 @@ public class UrlService {
 			}
 		}
 
-		throw new IllegalStateException("단축 코드 생성에 실패했습니다.");
+		throw new ShortCodeGenerationException();
 	}
-	
+
 	@Transactional
 	public String redirect(String shortCode) {
+
 		Url url = urlRepository.findByShortCode(shortCode)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 단축 URL입니다."));
+				.orElseThrow(UrlNotFoundException::new);
 
 		if (url.isExpired(LocalDateTime.now())) {
-			throw new IllegalStateException("만료된 단축 URL입니다.");
+			throw new UrlExpiredException();
 		}
 
 		url.increaseClickCount();
