@@ -3,9 +3,12 @@ package com.ssu.urlshortener.url.service;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssu.urlshortener.global.dto.PageResponse;
 import com.ssu.urlshortener.global.exception.url.ShortCodeGenerationException;
 import com.ssu.urlshortener.global.exception.url.UrlExpiredException;
 import com.ssu.urlshortener.global.exception.url.UrlNotFoundException;
@@ -70,5 +73,12 @@ public class UrlService {
 		url.increaseClickCount();
 
 		return url.getOriginalUrl();
+	}
+	
+	public PageResponse<UrlResponse> getUrls(Pageable pageable) {
+		Page<UrlResponse> page = urlRepository.findAll(pageable)
+				.map(url -> UrlResponse.from(url, baseUrl));
+
+		return PageResponse.from(page);
 	}
 }

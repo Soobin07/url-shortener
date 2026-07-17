@@ -2,12 +2,17 @@ package com.ssu.urlshortener.url.controller;
 
 import java.net.URI;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssu.urlshortener.global.dto.PageResponse;
 import com.ssu.urlshortener.url.dto.CreateUrlRequest;
 import com.ssu.urlshortener.url.dto.UrlResponse;
 import com.ssu.urlshortener.url.service.UrlService;
@@ -31,5 +36,17 @@ public class UrlController {
 		return ResponseEntity
 				.created(URI.create("/api/urls/" + response.shortCode()))
 				.body(response);
+	}
+	
+	@GetMapping
+	public ResponseEntity<PageResponse<UrlResponse>> getUrls(
+			@PageableDefault(
+					size = 10,
+					sort = "createdAt",
+					direction = Sort.Direction.DESC
+			)
+			Pageable pageable
+	) {
+		return ResponseEntity.ok(urlService.getUrls(pageable));
 	}
 }
