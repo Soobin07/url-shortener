@@ -81,4 +81,12 @@ public class UrlService {
 
 		return PageResponse.from(page);
 	}
+	
+	public UrlResponse getUrl(String shortCode) {
+
+		Url url = urlRepository.findByShortCode(shortCode)
+				.orElseThrow(UrlNotFoundException::new);
+
+		return UrlResponse.from(url, baseUrl);
+	}
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,5 +49,15 @@ public class UrlController {
 			Pageable pageable
 	) {
 		return ResponseEntity.ok(urlService.getUrls(pageable));
+	}
+	
+	@GetMapping("/{shortCode}")
+	public ResponseEntity<UrlResponse> getUrl(
+			@PathVariable String shortCode
+	) {
+
+		return ResponseEntity.ok(
+				urlService.getUrl(shortCode)
+		);
 	}
 }
