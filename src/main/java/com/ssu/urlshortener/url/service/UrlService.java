@@ -89,4 +89,13 @@ public class UrlService {
 
 		return UrlResponse.from(url, baseUrl);
 	}
+	
+	@Transactional
+	public void delete(String shortCode) {
+
+		Url url = urlRepository.findByShortCode(shortCode)
+				.orElseThrow(UrlNotFoundException::new);
+
+		urlRepository.delete(url);
+	}
 }
