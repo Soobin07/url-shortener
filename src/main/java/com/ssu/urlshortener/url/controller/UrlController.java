@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssu.urlshortener.global.dto.PageResponse;
@@ -42,6 +43,7 @@ public class UrlController {
 	
 	@GetMapping
 	public ResponseEntity<PageResponse<UrlResponse>> getUrls(
+			@RequestParam(required = false) String keyword,
 			@PageableDefault(
 					size = 10,
 					sort = "createdAt",
@@ -49,7 +51,10 @@ public class UrlController {
 			)
 			Pageable pageable
 	) {
-		return ResponseEntity.ok(urlService.getUrls(pageable));
+		PageResponse<UrlResponse> response =
+				urlService.getUrls(keyword, pageable);
+
+		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/{shortCode}")

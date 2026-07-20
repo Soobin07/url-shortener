@@ -75,11 +75,30 @@ public class UrlService {
 		return url.getOriginalUrl();
 	}
 	
-	public PageResponse<UrlResponse> getUrls(Pageable pageable) {
-		Page<UrlResponse> page = urlRepository.findAll(pageable)
+	public PageResponse<UrlResponse> getUrls(
+			String keyword,
+			Pageable pageable
+	) {
+		Page<Url> urlPage;
+
+		if (keyword == null || keyword.isBlank()) {
+			urlPage = urlRepository.findAll(pageable);
+		} else {
+			String normalizedKeyword = keyword.trim();
+
+			urlPage =
+					urlRepository
+							.findByOriginalUrlContainingIgnoreCaseOrShortCodeContainingIgnoreCase(
+									normalizedKeyword,
+									normalizedKeyword,
+									pageable
+							);
+		}
+
+		Page<UrlResponse> responsePage = urlPage
 				.map(url -> UrlResponse.from(url, baseUrl));
 
-		return PageResponse.from(page);
+		return PageResponse.from(responsePage);
 	}
 	
 	public UrlResponse getUrl(String shortCode) {
