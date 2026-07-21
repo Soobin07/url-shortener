@@ -37,11 +37,7 @@ public class Url extends BaseEntity {
 	private LocalDateTime expiresAt;
 
 	@Builder
-	public Url(
-			String originalUrl,
-			String shortCode,
-			LocalDateTime expiresAt
-	) {
+	public Url(String originalUrl, String shortCode, LocalDateTime expiresAt) {
 		this.originalUrl = originalUrl;
 		this.shortCode = shortCode;
 		this.expiresAt = expiresAt;
@@ -54,5 +50,15 @@ public class Url extends BaseEntity {
 
 	public boolean isExpired(LocalDateTime now) {
 		return expiresAt != null && expiresAt.isBefore(now);
+	}
+
+	public void update(String originalUrl, LocalDateTime expiresAt) {
+		if (originalUrl != null) {
+			this.originalUrl = originalUrl;
+		}
+
+		if (expiresAt != null) {
+			this.expiresAt = expiresAt;
+		}
 	}
 }

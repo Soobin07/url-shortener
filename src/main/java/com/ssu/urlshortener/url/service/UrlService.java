@@ -19,6 +19,8 @@ import com.ssu.urlshortener.url.generator.ShortCodeGenerator;
 import com.ssu.urlshortener.url.repository.UrlRepository;
 
 import lombok.RequiredArgsConstructor;
+import com.ssu.urlshortener.global.exception.url.InvalidUrlUpdateException;
+import com.ssu.urlshortener.url.dto.UpdateUrlRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -116,5 +118,25 @@ public class UrlService {
 				.orElseThrow(UrlNotFoundException::new);
 
 		urlRepository.delete(url);
+	}
+	
+	@Transactional
+	public UrlResponse update(String shortCode, UpdateUrlRequest request) {
+		if (request.originalUrl() == null && request.expiresAt() == null) {
+			throw new InvalidUrlUpdateException();
+		}
+
+		Url url = urlRepository.findByShortCode(shortCode)
+				.orElseThrow(UrlNotFoundException::new);
+
+		String originalUrl = request.originalUrl();
+
+		if (originalUrl != null) {
+			originalUrl = originalUrl.trim();
+		}
+
+		url.update(originalUrl, request.expiresAt());
+
+		return UrlResponse.from(url, baseUrl);
 	}
 }
