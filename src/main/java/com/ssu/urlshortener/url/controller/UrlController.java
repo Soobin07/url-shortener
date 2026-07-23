@@ -41,7 +41,8 @@ public class UrlController {
 	}
 
 	@GetMapping
-	public ResponseEntity<PageResponse<UrlResponse>> getUrls(@RequestParam(required = false) String keyword,
+	public ResponseEntity<PageResponse<UrlResponse>> getUrls(
+			@RequestParam(name = "keyword", required = false) String keyword,
 			@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		PageResponse<UrlResponse> response = urlService.getUrls(keyword, pageable);
 
@@ -49,13 +50,13 @@ public class UrlController {
 	}
 
 	@GetMapping("/{shortCode}")
-	public ResponseEntity<UrlResponse> getUrl(@PathVariable String shortCode) {
+	public ResponseEntity<UrlResponse> getUrl(@PathVariable(name = "shortCode") String shortCode) {
 
 		return ResponseEntity.ok(urlService.getUrl(shortCode));
 	}
 
 	@DeleteMapping("/{shortCode}")
-	public ResponseEntity<Void> delete(@PathVariable String shortCode) {
+	public ResponseEntity<Void> delete(@PathVariable(name = "shortCode") String shortCode) {
 
 		urlService.delete(shortCode);
 
@@ -63,7 +64,7 @@ public class UrlController {
 	}
 
 	@PatchMapping("/{shortCode}")
-	public ResponseEntity<UrlResponse> update(@PathVariable String shortCode,
+	public ResponseEntity<UrlResponse> update(@PathVariable(name = "shortCode") String shortCode,
 			@Valid @RequestBody UpdateUrlRequest request) {
 		UrlResponse response = urlService.update(shortCode, request);
 
