@@ -146,6 +146,25 @@ class UrlControllerTest {
 
 			verify(urlService, never()).create(any());
 		}
+		
+		@Test
+		@DisplayName("올바르지 않은 URL이면 400 응답을 반환한다")
+		void create_invalidOriginalUrl() throws Exception {
+			String requestBody = """
+					{
+					  "originalUrl": "ftp://example.com"
+					}
+					""";
+
+			mockMvc.perform(
+						post("/api/urls")
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(requestBody)
+					)
+					.andExpect(status().isBadRequest());
+
+			verify(urlService, never()).create(any());
+		}
 	}
 
 	@Nested
@@ -406,6 +425,28 @@ class UrlControllerTest {
 					""";
 
 			// when & then
+			mockMvc.perform(
+						patch("/api/urls/{shortCode}", SHORT_CODE)
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(requestBody)
+					)
+					.andExpect(status().isBadRequest());
+
+			verify(urlService, never()).update(
+					eq(SHORT_CODE),
+					any(UpdateUrlRequest.class)
+			);
+		}
+		
+		@Test
+		@DisplayName("올바르지 않은 URL로 수정하면 400 응답을 반환한다")
+		void update_invalidOriginalUrl() throws Exception {
+			String requestBody = """
+					{
+					  "originalUrl": "example.com"
+					}
+					""";
+
 			mockMvc.perform(
 						patch("/api/urls/{shortCode}", SHORT_CODE)
 								.contentType(MediaType.APPLICATION_JSON)
