@@ -520,6 +520,30 @@ class UrlServiceTest {
 			verify(urlRepository, never())
 					.delete(org.mockito.ArgumentMatchers.any(Url.class));
 		}
+		
+		@Nested
+		@DisplayName("만료 URL 삭제")
+		class DeleteExpiredUrls {
+
+			@Test
+			@DisplayName("현재 시각보다 만료일이 이전인 URL을 일괄 삭제한다")
+			void deleteExpiredUrls_success() {
+				// given
+				LocalDateTime now =
+						LocalDateTime.of(2026, 7, 27, 3, 0);
+
+				given(urlRepository.deleteExpiredUrls(now))
+						.willReturn(3);
+
+				// when
+				int deletedCount = urlService.deleteExpiredUrls(now);
+
+				// then
+				assertThat(deletedCount).isEqualTo(3);
+
+				verify(urlRepository).deleteExpiredUrls(now);
+			}
+		}
 	}
 
 	private Url createUrl(

@@ -121,6 +121,11 @@ public class UrlService {
 	}
 	
 	@Transactional
+	public int deleteExpiredUrls(LocalDateTime now) {
+		return urlRepository.deleteExpiredUrls(now);
+	}
+	
+	@Transactional
 	public UrlResponse update(String shortCode, UpdateUrlRequest request) {
 		if (request.originalUrl() == null && request.expiresAt() == null) {
 			throw new InvalidUrlUpdateException();

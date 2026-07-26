@@ -27,3 +27,7 @@ springdoc:
 
 app:
   base-url: http://localhost:8080
+
+  scheduler:
+    zone: Asia/Tokyo
+    expired-url-cleanup-cron: "0 0 3 * * *"
